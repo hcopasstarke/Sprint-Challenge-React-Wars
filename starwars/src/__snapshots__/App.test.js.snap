@@ -10,9 +10,10 @@ exports[`<App /> should match snapshot 1`] = `
     <h1
       className="title"
     >
-       React Wars: 
+       
+      React Wars: 
       <br />
-      M ay The Code Be With You ⚔︎
+      Dark or Light?
     </h1>
     <div
       className="ui divider"
