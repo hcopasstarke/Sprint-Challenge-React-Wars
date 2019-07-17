@@ -1,82 +1,47 @@
-import React, { Component } from 'react';
-import './App.scss';
-import DispChars from './components/DispChars';
-import IndChars from './components/IndChars';
+import React, { useState, useEffect } from "react"
+import axios from "axios"
+import "./App.css"
 
+import { Container, Divider } from "semantic-ui-react"
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      starwarsChars: [],
-      currentChar: null,
-      nextChar: null,
-      prevChar: null
-    };
-  }
+import { StarCharacterCompMap } from "./components/StarCharacterCompMap"
 
-  componentDidMount() {
-    this.getCharacters('https://swapi.co/api/people/');
-  }
+const App = () => {
+	// Try to think through what state you'll need for this app before starting. Then build out
+	// the state properties here.
+	const [starChar, setStarChar] = useState([])
+	console.log(starChar)
 
-  getCharacters = URL => {
-    fetch(URL)
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.setState({ starwarsChars: data.results, nextChar: data.next, prevChar: data.previous});
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
-  };
+	// Fetch characters from the star wars api in an effect hook. Remember, anytime you have a
+	// side effect in a component, you want to think about which state and/or props it should
+	// sync up with, if any.
+	useEffect(() => {
+		axios
 
+			.get("https://swapi.co/api/people/")
+			.then(res => {
+				console.log("response data", res)
+				setStarChar(res.data.results)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}, [])
 
-  displayNextChar = event => {
-    if(this.state.nextChar !== null) {
-      const newData = this.getCharacters(this.state.nextChar);
-      console.log(newData);
-    }
-  }
+	return (
+		<div className='App'>
+			<Container>
+				<h1 className='title'>
+					{" "}
+					React Wars: <br />
+					Dark or Light?
+				</h1>
+				<Divider />
+			</Container>
 
-  displayPrevChar = event => {
-    if(this.state.prevChar !== null) {
-      const newData = this.getCharacters(this.state.prevChar);
-      console.log(newData);
-    }
-  }
-
-  displayChar = name => {
-    const currentChar = this.state.starwarsChar.find(char => char.name === name);
-    console.log(currentChar);
-  }
-
-  render() {
-    if (this.state.currentChar === null) {
-      return (
-        <div className='App'>
-          <h1 className='Header'>React Wars!</h1>
-          <div className='charList'>
-            <DispChars chars={this.state.starwarsChars} 
-              displayCurrentChar={this.displayCurrentChar} 
-              displayNextPage={this.displayNextChar}
-              displayPrevPage={this.displayPrevChar}
-              nextPage={this.state.nextChar}
-              prevPage={this.state.prevChar}
-            />
-          </div>
-        </div>
-      );
-    }
-    else {
-      return (
-        <div>
-          <IndChars backToList={this.backToList} character={this.state.currentChar} />
-        </div>
-      );
-    }
-  }
+			{starChar.length ? <StarCharacterCompMap characters={starChar} /> : <h1>loading</h1>}
+		</div>
+	)
 }
 
-export default App;
+export default App

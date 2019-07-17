@@ -1,0 +1,16 @@
+.card {
+	justify-content: center;
+}
+
+.ui card {
+	margin-bottom: 30px;
+}
+
+.font {
+	font-family: "Kaushan Script", cursive;
+	color: black;
+}
+
+.text {
+	color: black;
+}
